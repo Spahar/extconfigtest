@@ -12,9 +12,9 @@ public class StartupManager : MonoBehaviour
     private void Awake()
     {
 #if CLIENT_0
-        BaseDomain = @"http://www.spahar.me/d1";
+        BaseDomain = ClientsManager.GetUrlByScriptingSymbol("CLIENT_0");
 #elif CLIENT_1
-        BaseDomain = @"http://www.spahar.me/d2";
+        BaseDomain = ClientsManager.GetUrlByScriptingSymbol("CLIENT_1");
 #else
         // Get BaseDomain from an external config file
         GetSettingsFromExternalConfig();
