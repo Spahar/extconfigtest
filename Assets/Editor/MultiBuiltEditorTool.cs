@@ -21,23 +21,6 @@ public class MultiBuildEditorTool : EditorWindow
         BuildTarget.Android
     };
 
-    BuildTargetGroup GetTargetGroupForTarget(BuildTarget target)
-    {
-        switch (target)
-        {
-            //case BuildTarget.StandaloneWindows:
-            case BuildTarget.StandaloneWindows64:
-            case BuildTarget.StandaloneOSX:
-                return BuildTargetGroup.Standalone;
-            case BuildTarget.iOS:
-                return BuildTargetGroup.iOS;
-            case BuildTarget.Android:
-                return BuildTargetGroup.Android;
-            default:
-                return BuildTargetGroup.Unknown;
-        }
-    }
-
     Dictionary<BuildTarget, bool> targetsToBuild = new Dictionary<BuildTarget, bool>();
     Dictionary<ClientData, bool> clientsToBuild = new Dictionary<ClientData, bool>();
 
@@ -83,7 +66,7 @@ public class MultiBuildEditorTool : EditorWindow
         foreach (var buildTarget in desiredBuildTargets)
         {
             // skip if unsupported
-            if (!BuildPipeline.IsBuildTargetSupported(GetTargetGroupForTarget(buildTarget), buildTarget))
+            if (!BuildPipeline.IsBuildTargetSupported(BuildPipeline.GetBuildTargetGroup(buildTarget), buildTarget))
                 continue;
 
             availableTargets.Add(buildTarget);
@@ -185,7 +168,7 @@ public class MultiBuildEditorTool : EditorWindow
                     // Progress.Finish(buildAllProgressID, Progress.Status.Failed);
 
                     if (EditorUserBuildSettings.activeBuildTarget != originalTarget)
-                        EditorUserBuildSettings.SwitchActiveBuildTargetAsync(GetTargetGroupForTarget(originalTarget), originalTarget);
+                        EditorUserBuildSettings.SwitchActiveBuildTargetAsync(BuildPipeline.GetBuildTargetGroup(originalTarget), originalTarget);
                     // Restore the scripting define symbols for this build target
                     RestoreCurrentScriptingDefineSymbols(originalScriptingDefineSymbols);
 
@@ -200,7 +183,7 @@ public class MultiBuildEditorTool : EditorWindow
         //Progress.Finish(buildAllProgressID, Progress.Status.Succeeded);
 
         if (EditorUserBuildSettings.activeBuildTarget != originalTarget)
-            EditorUserBuildSettings.SwitchActiveBuildTargetAsync(GetTargetGroupForTarget(originalTarget), originalTarget);
+            EditorUserBuildSettings.SwitchActiveBuildTargetAsync(BuildPipeline.GetBuildTargetGroup(originalTarget), originalTarget);
         // Restore the scripting define symbols for this build target
         RestoreCurrentScriptingDefineSymbols(originalScriptingDefineSymbols);
 
@@ -222,7 +205,7 @@ public class MultiBuildEditorTool : EditorWindow
         // configure the build
         options.scenes = scenes.ToArray();
         options.target = target;
-        options.targetGroup = GetTargetGroupForTarget(target);
+        options.targetGroup = BuildPipeline.GetBuildTargetGroup(target);
 
         // set the location path name
         if (target == BuildTarget.Android)
